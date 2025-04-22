@@ -4,11 +4,35 @@ import firebase_admin
 from firebase_admin import credentials, firestore, auth
 import threading
 import pandas as pd
+import os
+import json
+from dotenv import load_dotenv
 
+# Load environment variables
+load_dotenv()
 
-cred = credentials.Certificate('firebase-config.json')
-firebase_admin.initialize_app(cred)
-db = firestore.client()
+# Get Firebase configuration from environment variable with error handling
+try:
+    firebase_config_str = os.getenv('FIREBASE_CONFIG')
+    if not firebase_config_str:
+        raise ValueError("FIREBASE_CONFIG environment variable is not set")
+    
+    # Remove any extra whitespace and newlines
+    firebase_config_str = firebase_config_str.strip()
+    
+    # Parse the JSON string
+    firebase_config = json.loads(firebase_config_str)
+    
+    # Initialize Firebase
+    cred = credentials.Certificate(firebase_config)
+    firebase_admin.initialize_app(cred)
+    db = firestore.client()
+except json.JSONDecodeError as e:
+    print(f"Error parsing Firebase configuration: {e}")
+    raise
+except Exception as e:
+    print(f"Error initializing Firebase: {e}")
+    raise
 
 app = Flask(__name__)
 
@@ -137,7 +161,6 @@ def fetch_data():
 def fetch_cves():
     docs = db.collection('cves').get()
     cves = [doc.to_dict() for doc in docs]
-    
     return jsonify(cves)
 
 @app.route('/sources')
@@ -153,3 +176,4 @@ def index():
 
 if __name__ == '__main__':
     app.run(debug=True,port=5050)
+    

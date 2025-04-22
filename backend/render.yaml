@@ -1,9 +1,11 @@
 services:
   - type: web
-    name: threat-map-backend
+    name: flask-backend
     env: python
-    buildCommand: bash build.sh
-    startCommand: gunicorn api:app
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
     envVars:
-      - key: PYTHON_VERSION
-        value: 3.8.12
+      - key: FIREBASE_CONFIG
+        sync: false
+    healthCheckPath: /
+    autoDeploy: true

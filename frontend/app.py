@@ -7,16 +7,38 @@ import plotly.express as px
 import json
 import pandas as pd
 from functools import wraps
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+# Get Firebase configuration from environment variable with error handling
+try:
+    firebase_config_str = os.getenv('FIREBASE_CONFIG')
+    if not firebase_config_str:
+        raise ValueError("FIREBASE_CONFIG environment variable is not set")
+    
+    # Remove any extra whitespace and newlines
+    firebase_config_str = firebase_config_str.strip()
+    
+    # Parse the JSON string
+    firebase_config = json.loads(firebase_config_str)
+    
+    # Initialize Firebase Admin
+    cred = credentials.Certificate(firebase_config)
+    default_app = firebase_admin.initialize_app(cred)
+except json.JSONDecodeError as e:
+    print(f"Error parsing Firebase configuration: {e}")
+    raise
+except ValueError as e:
+    print(f"Error with Firebase configuration: {e}")
+    raise
+except Exception as e:
+    print(f"Error initializing Firebase: {e}")
+    raise
 
 app = Flask(__name__)
 app.secret_key = 'your-secret-key'  # Change this to a secure secret key
-
-# Initialize Firebase Admin
-try:
-    cred = credentials.Certificate('../backend/firebase-config.json' )
-    default_app = firebase_admin.initialize_app(cred)
-except ValueError:
-    default_app = firebase_admin.get_app()
 
 # Backend API URL
 BACKEND_URL = 'http://localhost:5050'
