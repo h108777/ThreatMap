@@ -29,6 +29,7 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
+# lol
 @app.route('/')
 @login_required
 def index():
