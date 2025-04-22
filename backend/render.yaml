@@ -4,8 +4,9 @@ services:
     env: python
     buildCommand: |
       python -m pip install --upgrade pip
+      pip install gunicorn
       pip install -r requirements.txt
-    startCommand: python -m gunicorn --bind 0.0.0.0:$PORT --worker-class gevent app:app
+    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT
     envVars:
       - key: FIREBASE_CONFIG
         sync: false
@@ -13,5 +14,5 @@ services:
         value: 3.9.0
       - key: PORT
         value: 10000
-    healthCheckPath: /
-    autoDeploy: true
+      - key: FLASK_ENV
+        value: production
