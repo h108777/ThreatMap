@@ -4,9 +4,8 @@ services:
     env: python
     buildCommand: |
       python -m pip install --upgrade pip
-      pip install gunicorn
       pip install -r requirements.txt
-    startCommand: gunicorn --bind 0.0.0.0:$PORT app:app
+    startCommand: python -m gunicorn --bind 0.0.0.0:$PORT --worker-class gevent app:app
     envVars:
       - key: FIREBASE_CONFIG
         sync: false
