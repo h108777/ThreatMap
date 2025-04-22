@@ -3,6 +3,7 @@ from firebase_admin import credentials, firestore, auth
 
 cred = credentials.Certificate('firebase-config.json')
 firebase_admin.initialize_app(cred)
+
 db = firestore.client()
 
 def login_user(email, password):

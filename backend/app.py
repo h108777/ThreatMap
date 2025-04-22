@@ -137,6 +137,7 @@ def fetch_data():
 def fetch_cves():
     docs = db.collection('cves').get()
     cves = [doc.to_dict() for doc in docs]
+    
     return jsonify(cves)
 
 @app.route('/sources')

@@ -13,7 +13,7 @@ app.secret_key = 'your-secret-key'  # Change this to a secure secret key
 
 # Initialize Firebase Admin
 try:
-    cred = credentials.Certificate('../backend/firebase-config.json')
+    cred = credentials.Certificate('../backend/firebase-config.json' )
     default_app = firebase_admin.initialize_app(cred)
 except ValueError:
     default_app = firebase_admin.get_app()
@@ -22,6 +22,7 @@ except ValueError:
 BACKEND_URL = 'http://localhost:5050'
 
 def login_required(f):
+    
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if 'user' not in session:
